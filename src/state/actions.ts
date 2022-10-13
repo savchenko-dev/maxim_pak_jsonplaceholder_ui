@@ -7,4 +7,11 @@ const loadPosts = async () => {
   state.setState({ posts, postsLoading: false });
 };
 
-export { loadPosts };
+const deletePost = (postId: number) => {
+  const posts = state.getState().posts;
+  state.setState({
+    posts: posts.filter((p) => p.id !== postId),
+  });
+};
+
+export { loadPosts, deletePost };

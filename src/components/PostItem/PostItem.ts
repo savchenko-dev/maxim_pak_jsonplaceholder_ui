@@ -1,5 +1,8 @@
-import { PostEntity } from "../../entities/PostEntity";
 import "./PostItem.css";
+
+import { PostEntity } from "../../entities/PostEntity";
+import { createElement } from "../../libs/renderer/utils/createElement";
+import { deletePost } from "../../state/actions";
 
 type PostItemProps = {
   post: PostEntity;
@@ -8,32 +11,15 @@ type PostItemProps = {
 function PostItem(props: PostItemProps) {
   const { post } = props;
 
-  const postItem = document.createElement("div");
-  postItem.className = "post-item";
-
-  const postTitle = document.createElement("p");
-  postTitle.className = "post-title";
-  postTitle.innerText = `${post.title}`;
-  postItem.appendChild(postTitle);
-
-  const postBody = document.createElement("p");
-  postBody.className = "post-body";
-  postBody.innerText = `${post.body}`;
-  postItem.appendChild(postBody);
-
-  const postAuhor = document.createElement("p");
-  postAuhor.className = "post-author";
-  postAuhor.innerText = `${post.id}`;
-  postItem.appendChild(postAuhor);
-
-  return postItem;
-
-  // return `
-  //   <div class="post-item">
-  //     <p class="post-title">${post.title}</p>
-  //     <p class="post-author">${post.userId}</p>
-  //   </div>
-  // `;
+  return createElement("div", { className: "post-item", "data-key": post.id }, [
+    createElement("p", { className: "post-title" }, [
+      `[${post.id}] ${post.title}`,
+    ]),
+    createElement("p", { className: "post-body" }, [post.body]),
+    createElement("button", { onclick: () => deletePost(post.id) }, [
+      "Delete post",
+    ]),
+  ]);
 }
 
 export { PostItem };
