@@ -52,11 +52,7 @@ class Renderer {
           vNode.type === realNode.tagName.toLowerCase()) ||
           (typeof vNode === "string" && realNode instanceof Text))
       ) {
-        if (
-          typeof vNode === "object" &&
-          realNode instanceof HTMLElement &&
-          vNode.type === realNode.tagName.toLowerCase()
-        ) {
+        if (typeof vNode === "object" && realNode instanceof HTMLElement) {
           this.sync(vNode, realNode);
         } else if (typeof vNode === "string" && realNode instanceof Text) {
           realNode.textContent = vNode;
@@ -67,13 +63,29 @@ class Renderer {
       if (
         vNode !== undefined &&
         realNode !== undefined &&
-        typeof vNode === "object" &&
-        realNode instanceof HTMLElement &&
-        vNode.type !== realNode.tagName.toLowerCase()
+        ((typeof vNode === "object" &&
+          realNode instanceof HTMLElement &&
+          vNode.type !== realNode.tagName.toLowerCase()) ||
+          (typeof vNode === "string" && realNode instanceof HTMLElement) ||
+          (typeof vNode === "object" && realNode instanceof Text))
       ) {
-        const newRealNode = createDomElement(vNode) as HTMLElement;
-        this.sync(vNode, newRealNode);
-        realDom.replaceChild(realNode, newRealNode);
+        if (typeof vNode === "object" && realNode instanceof HTMLElement) {
+          const newRealNode = createDomElement(vNode) as HTMLElement;
+          this.sync(vNode, newRealNode);
+          realDom.replaceChild(realNode, newRealNode);
+        }
+
+        if (typeof vNode === "string" && realNode instanceof HTMLElement) {
+          const newRealNode = createDomElement(vNode) as Text;
+          realDom.replaceChild(realNode, newRealNode);
+        }
+
+        if (typeof vNode === "object" && realNode instanceof Text) {
+          const newRealNode = createDomElement(vNode) as HTMLElement;
+          this.sync(vNode, newRealNode);
+          realNode.remove();
+          realDom.append(newRealNode);
+        }
       }
 
       // Delete

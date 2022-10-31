@@ -5,9 +5,6 @@ import { Renderer } from "./libs/renderer/Renderer";
 import { loadPosts } from "./state/actions";
 import { state } from "./state";
 
-// Load data
-loadPosts();
-
 // Render
 const dom = new Renderer();
 
@@ -19,10 +16,7 @@ function render() {
       !searchQuery || p.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  console.log(
-    filteredPosts,
-    PostList({ loading: postsLoading, postItems: filteredPosts })
-  );
+  console.log(PostList({ loading: postsLoading, postItems: filteredPosts }));
 
   dom.render(
     PostList({ loading: postsLoading, postItems: filteredPosts }),
@@ -31,3 +25,6 @@ function render() {
 }
 
 state.subscribe(render);
+
+// Load data
+loadPosts();
